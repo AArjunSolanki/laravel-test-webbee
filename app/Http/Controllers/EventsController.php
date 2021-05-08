@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Date;
+use Carbon\Carbon;
 
 class EventsController extends BaseController
 {
@@ -177,6 +178,15 @@ class EventsController extends BaseController
      */
 
     public function getFutureEventsWithWorkshops() {
-        throw new \Exception('implement in coding task 2');
+        $date = Carbon::now()->toDateTimeString();
+        $events = Event::with('workshop')->get();
+        $evetsArray = [];
+        foreach ($events as $key => $value) {
+            $events[$key]['workshops'] = $value['workshop'];
+            if(count($value['workshop']) > 0) {
+                array_push($evetsArray, $value);
+            }
+        }
+        return response()->json($evetsArray);
     }
 }
